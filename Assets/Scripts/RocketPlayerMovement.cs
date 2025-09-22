@@ -3,28 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RocketPlayerMovement : MonoBehaviour {
+    [Header("Movement")]
     public float moveSpeed = 5f;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
 
-    // Start is called before the first frame update
+    [Header("Shooting")]
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+
     void Start() {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update() {
+        // Movement input
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
-        moveInput = new Vector2(moveInput.x, moveInput.y).normalized; // Fixed line
+        moveInput = moveInput.normalized;
+
+        // Shooting
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            Shoot();
+        }
     }
 
     void FixedUpdate() {
-        // Apply movement in physics step
+        // Apply movement
         rb.velocity = moveInput * moveSpeed;
 
-        // Keep the rocket locked on Z axis
+        // Lock Z axis
         transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
+    }
+
+    void Shoot() {
+        Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
     }
 }
