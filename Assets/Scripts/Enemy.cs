@@ -31,5 +31,7 @@ public class Enemy : MonoBehaviour {
                 Destroy(gameObject); // Destroy enemy if health is 0
             }
         }
+
+        ScoreManager.instance.AddScore(10); // add 10 points
     }
 }
