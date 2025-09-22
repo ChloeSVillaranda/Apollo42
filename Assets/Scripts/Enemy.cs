@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
+        Debug.Log("Collided with: " + collision.name); // test log
         if (collision.CompareTag("Bullet")) {
             health--;
             Destroy(collision.gameObject); // Destroy the bullet
