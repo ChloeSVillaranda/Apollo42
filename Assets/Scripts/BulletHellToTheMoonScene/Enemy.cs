@@ -5,11 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
     public float speed = 2f;
     public int health = 1;
-
-    // Start is called before the first frame update
-    void Start() {
-
-    }
+    public int damage = 1;
 
     // Update is called once per frame
     void Update() {
@@ -22,16 +18,24 @@ public class Enemy : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        Debug.Log("Collided with: " + collision.name); // test log
+        Debug.Log("Collided with: " + collision.name);
+
         if (collision.CompareTag("Bullet")) {
             health--;
-            Destroy(collision.gameObject); // Destroy the bullet
+            Destroy(collision.gameObject);
 
             if (health <= 0) {
-                Destroy(gameObject); // Destroy enemy if health is 0
+                Destroy(gameObject);
             }
+
+            ScoreManager.instance.AddScore(10);
         }
 
-        ScoreManager.instance.AddScore(10); // add 10 points
+        if (collision.CompareTag("RocketPlayer")) {
+            RocketHealth rocket = collision.GetComponent<RocketHealth>();
+            if (rocket != null) {
+                rocket.TakeDamage(damage);
+            }
+        }
     }
 }
