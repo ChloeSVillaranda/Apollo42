@@ -6,7 +6,10 @@ public class RocketInteract : MonoBehaviour {
     public GameObject interactText;
     private bool playerInRange = false;
 
-    public AudioSource rocketLaunchAudio;
+    public AudioSource rocketCountdownAudio; // First audio
+    public AudioSource rocketLaunchSE; // Second audio
+
+    private bool hasLaunched = false; // To ensure the launch happens only once
 
     void Start() {
         if (interactText != null) {
@@ -16,16 +19,23 @@ public class RocketInteract : MonoBehaviour {
             Debug.LogError("RocketInteract: interactText is not assigned in the Inspector!");
         }
 
-        if (rocketLaunchAudio != null) {
-            rocketLaunchAudio.enabled = false; // Disable the AudioSource at the start
+        if (rocketCountdownAudio != null) {
+            rocketCountdownAudio.enabled = false;
             Debug.Log("RocketInteract: rocketLaunchAudio is disabled at start.");
         } else {
             Debug.LogError("RocketInteract: rocketLaunchAudio is not assigned in the Inspector!");
         }
+
+        if (rocketLaunchSE != null) {
+            rocketLaunchSE.enabled = false;
+            Debug.Log("RocketInteract: secondAudio is disabled at start.");
+        } else {
+            Debug.LogError("RocketInteract: secondAudio is not assigned in the Inspector!");
+        }
     }
 
     void Update() {
-        if (playerInRange && Input.GetKeyDown(KeyCode.F)) {
+        if (playerInRange && Input.GetKeyDown(KeyCode.F) && !hasLaunched) {
             Debug.Log("RocketInteract: Player pressed F to start the rocket launch.");
             StartRocketLaunch();
         }
@@ -56,14 +66,27 @@ public class RocketInteract : MonoBehaviour {
     }
 
     private void StartRocketLaunch() {
-        if (rocketLaunchAudio != null) {
-            rocketLaunchAudio.enabled = true; // Enable the AudioSource
-            rocketLaunchAudio.Play(); // Play the rocket launch audio
+        if (rocketCountdownAudio != null) {
+            rocketCountdownAudio.enabled = true; // Enable the AudioSource
+            rocketCountdownAudio.Play(); // Play the rocket launch audio
             Debug.Log("RocketInteract: Rocket launch audio started playing.");
+
+            // Schedule the second audio to play after the first audio finishes
+            Invoke(nameof(PlaySecondAudio), rocketCountdownAudio.clip.length);
         } else {
             Debug.LogError("RocketInteract: rocketLaunchAudio is not assigned!");
         }
 
-        // Add additional rocket launch logic here (e.g., animations, scene transitions, etc.)
+        hasLaunched = true; // Ensure the launch happens only once
+    }
+
+    private void PlaySecondAudio() {
+        if (rocketLaunchSE != null) {
+            rocketLaunchSE.enabled = true; // Enable the second AudioSource
+            rocketLaunchSE.Play(); // Play the second audio
+            Debug.Log("RocketInteract: Second audio started playing.");
+        } else {
+            Debug.LogError("RocketInteract: secondAudio is not assigned!");
+        }
     }
 }
