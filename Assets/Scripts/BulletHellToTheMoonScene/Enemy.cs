@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour {
     void Update() {
         transform.Translate(Vector2.down * speed * Time.deltaTime);
 
-        if (transform.position.y < -6f) // If enemy goes off screen
+        if (transform.position.y < -10f) // If enemy goes off screen
         {
             Destroy(gameObject); // Destroy it
         }
