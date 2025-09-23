@@ -12,6 +12,9 @@ public class RocketPlayerMovement : MonoBehaviour {
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public Transform firePoint;
+    public float fireRate = 0.2f; // Time in seconds between shots
+
+    private float nextFireTime = 0f;
 
     void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -24,7 +27,8 @@ public class RocketPlayerMovement : MonoBehaviour {
         moveInput = moveInput.normalized;
 
         // Shooting
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKey(KeyCode.Space) && Time.time >= nextFireTime) {
+            nextFireTime = Time.time + fireRate; // Set the next allowed fire time
             Shoot();
         }
     }
