@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; // For scene loading
 using TMPro;
 
 public class RocketInteract : MonoBehaviour {
@@ -8,6 +9,10 @@ public class RocketInteract : MonoBehaviour {
 
     public AudioSource rocketCountdownAudio; // First audio
     public AudioSource rocketLaunchSE; // Second audio
+
+    public Image fadeOverlay; // UI Image for fading to black
+    public float fadeDuration = 2f; // Duration of the fade effect
+    public string nextSceneName; // Name of the next scene to load
 
     private bool hasLaunched = false; // To ensure the launch happens only once
 
@@ -31,6 +36,12 @@ public class RocketInteract : MonoBehaviour {
             Debug.Log("RocketInteract: secondAudio is disabled at start.");
         } else {
             Debug.LogError("RocketInteract: secondAudio is not assigned in the Inspector!");
+        }
+
+        if (fadeOverlay != null) {
+            fadeOverlay.color = new Color(0, 0, 0, 0); // Ensure the overlay is fully transparent at the start
+        } else {
+            Debug.LogError("RocketInteract: fadeOverlay is not assigned in the Inspector!");
         }
     }
 
@@ -85,8 +96,35 @@ public class RocketInteract : MonoBehaviour {
             rocketLaunchSE.enabled = true; // Enable the second AudioSource
             rocketLaunchSE.Play(); // Play the second audio
             Debug.Log("RocketInteract: Second audio started playing.");
+
+            // Schedule the fade to black and scene transition after the second audio finishes
+            Invoke(nameof(FadeToBlackAndLoadScene), rocketLaunchSE.clip.length);
         } else {
             Debug.LogError("RocketInteract: secondAudio is not assigned!");
         }
+    }
+
+    private void FadeToBlackAndLoadScene() {
+        if (fadeOverlay != null) {
+            StartCoroutine(FadeToBlack());
+        } else {
+            Debug.LogError("RocketInteract: fadeOverlay is not assigned!");
+        }
+    }
+
+    private System.Collections.IEnumerator FadeToBlack() {
+        Debug.Log("RocketInteract: Starting fade to black.");
+        float elapsedTime = 0f;
+
+        // Gradually increase the alpha value of the fade overlay
+        while (elapsedTime < fadeDuration) {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Clamp01(elapsedTime / fadeDuration);
+            fadeOverlay.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+
+        Debug.Log("RocketInteract: Fade to black complete. Loading next scene.");
+        SceneManager.LoadScene(nextSceneName); // Load the next scene
     }
 }
