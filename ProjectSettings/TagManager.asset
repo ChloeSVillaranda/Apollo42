@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bullet
   - RocketPlayer
+  - Moon
   layers:
   - Default
   - TransparentFX

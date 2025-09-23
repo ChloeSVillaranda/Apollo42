@@ -12,7 +12,7 @@ public class RocketPlayerMovement : MonoBehaviour {
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public Transform firePoint;
-    public float fireRate = 0.2f; // Time in seconds between shots
+    public float fireRate = 0.2f;
 
     private float nextFireTime = 0f;
 

@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public float spawnInterval = 2f;
     public float spawnRangeX = 8f;
+    public float spawnHeight = 12f;
 
     private float timer;
     void Start()
@@ -24,7 +25,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
     void SpawnEnemy() {
-        Vector2 spawnPos = new Vector2(Random.Range(-spawnRangeX, spawnRangeX), 6f);
+        Vector2 spawnPos = new Vector2(Random.Range(-spawnRangeX, spawnRangeX), spawnHeight);
         Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
     }
 }
