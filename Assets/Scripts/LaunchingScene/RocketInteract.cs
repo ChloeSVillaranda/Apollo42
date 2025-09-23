@@ -6,32 +6,64 @@ public class RocketInteract : MonoBehaviour {
     public GameObject interactText;
     private bool playerInRange = false;
 
+    public AudioSource rocketLaunchAudio;
+
     void Start() {
         if (interactText != null) {
-            interactText.SetActive(false); // hide at start
+            interactText.SetActive(false); // Hide at start
+            Debug.Log("RocketInteract: interactText successfully hidden at start.");
+        } else {
+            Debug.LogError("RocketInteract: interactText is not assigned in the Inspector!");
+        }
+
+        if (rocketLaunchAudio != null) {
+            rocketLaunchAudio.enabled = false; // Disable the AudioSource at the start
+            Debug.Log("RocketInteract: rocketLaunchAudio is disabled at start.");
+        } else {
+            Debug.LogError("RocketInteract: rocketLaunchAudio is not assigned in the Inspector!");
         }
     }
 
     void Update() {
         if (playerInRange && Input.GetKeyDown(KeyCode.F)) {
-            // Add mount logic here
+            Debug.Log("RocketInteract: Player pressed F to start the rocket launch.");
+            StartRocketLaunch();
         }
     }
 
     private void OnTriggerEnter(Collider other) {
+        Debug.Log($"RocketInteract: OnTriggerEnter called with {other.gameObject.name}.");
         if (other.CompareTag("Player")) {
+            Debug.Log("RocketInteract: Player entered the trigger zone.");
             if (interactText != null) {
                 interactText.SetActive(true);
+                Debug.Log("RocketInteract: interactText set to active.");
             }
             playerInRange = true;
         }
     }
+
     private void OnTriggerExit(Collider other) {
+        Debug.Log($"RocketInteract: OnTriggerExit called with {other.gameObject.name}.");
         if (other.CompareTag("Player")) {
+            Debug.Log("RocketInteract: Player exited the trigger zone.");
             if (interactText != null) {
                 interactText.SetActive(false);
+                Debug.Log("RocketInteract: interactText set to inactive.");
             }
             playerInRange = false;
         }
+    }
+
+    private void StartRocketLaunch() {
+        if (rocketLaunchAudio != null) {
+            rocketLaunchAudio.enabled = true; // Enable the AudioSource
+            rocketLaunchAudio.Play(); // Play the rocket launch audio
+            Debug.Log("RocketInteract: Rocket launch audio started playing.");
+        } else {
+            Debug.LogError("RocketInteract: rocketLaunchAudio is not assigned!");
+        }
+
+        // Add additional rocket launch logic here (e.g., animations, scene transitions, etc.)
     }
 }
